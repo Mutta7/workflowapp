@@ -39,7 +39,7 @@
 .file-area input[type=file]:valid + .file-dummy .success {
   display: inline-block;
 }
-.file-area input[type=file]:valid + .file-dummy .default {
+.file-area input[type=file]:valid + .file-dummy .preview {
   display: none;
 }
 
