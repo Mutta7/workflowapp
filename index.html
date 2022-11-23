@@ -1,47 +1,134 @@
 <!DOCTYPE html>
-<html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <title>workflow app</title>
-        <script src="filehandler.js"></script>
-        <link rel="stylesheet" href="common.css">
-    </head>
-    <body>
-        <form action="https://workflowfunction.azurewebsites.net/api/HttpTrigger1?code=tKcAB5giGyz8JjGi4gfFPj8IJp7vfkbZ5kGv2DHdxVWsAzFuw4YFkQ==" method="post">
-  
-            <h1><strong>File upload</strong> with style and pure CSS</h1>
-            
-            <div class="form-group">
-              <label for="title">Title <span>Use title case to get a better result</span></label>
-              <input type="text" name="title" id="title" class="form-controll"/>
-            </div>
-            <div class="form-group">
-              <label for="caption">Caption <span>This caption should be descriptiv</span></label>
-              <input type="text" name="caption" id="caption" class="form-controll"/>
-            </div>
-            
-            <div class="form-group file-area">
-                  <label for="documents">査閲資料 <span>査閲対象資料をアップロードしてください。PDF形式のみ可。</span></label>
-              <input type="file" accept=".pdf" name="documents" id="documents" required="required" multiple="multiple"/>
-              <div class="file-dummy">
-                <div class="success">Great, your files are selected. Keep on.</div>
-                <div class="preview">PDFファイルを選択してください（複数アップロード可）</div>
-              </div>
-            </div>
-            
-            <div class="form-group">
-              <button type="submit">Upload documents</button>
-            </div>
-            
-          </form>
-          
-          
-          
-          
-          
-          
-          <link href='https://fonts.googleapis.com/css?family=Lato:100,200,300,400,500,600,700' rel='stylesheet' type='text/css'>
-          
-          <a href="http://scribblerockerz.com/drag-n-drop-file-input-without-javascript/" class="back-to-article" target="_blank">back to Article</a>
-    </body>
+<html lang="en-us">
+  <head>
+    <title>workflow form</title>
+  <style>
+    html {
+      font-family: sans-serif;
+    }
+
+    form {
+      width: 600px;
+      background: #ccc;
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid black;
+    }
+
+    form ol {
+      padding-left: 0;
+    }
+
+    form li, div > p {
+      background: #eee;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      list-style-type: none;
+      border: 1px solid black;
+    }
+
+    form img {
+      height: 64px;
+      order: 1;
+    }
+
+    form p {
+      line-height: 32px;
+      padding-left: 10px;
+    }
+
+    form label, form button {
+      background-color: #7F9CCB;
+      padding: 5px 10px;
+      border-radius: 5px;
+      border: 1px ridge black;
+      font-size: 0.8rem;
+      height: auto;
+    }
+
+    form label:hover, form button:hover {
+      background-color: #2D5BA3;
+      color: white;
+    }
+
+    form label:active, form button:active {
+      background-color: #0D3F8F;
+      color: white;
+    }
+  </style>
+  </head>
+<body>
+  <form>
+    <div>
+      <label for="document_uploads">Choose PDF files to upload (.pdf)</label>
+      <input type="file" id="document_uploads" name="document_uploads" accept=".pdf" multiple>
+    </div>
+    <div class="preview">
+      <p>No files currently selected for upload</p>
+    </div>
+    <div>
+      <button>Submit</button>
+    </div>
+  </form>
+  <script>
+    const input = document.querySelector('input');
+    const preview = document.querySelector('.preview');
+
+    input.style.opacity = 0;
+
+    input.addEventListener('change', updateImageDisplay);
+
+    function updateImageDisplay() {
+      while(preview.firstChild) {
+        preview.removeChild(preview.firstChild);
+      }
+
+      const curFiles = input.files;
+      if(curFiles.length === 0) {
+        const para = document.createElement('p');
+        para.textContent = 'No files currently selected for upload';
+        preview.appendChild(para);
+      } else {
+        const list = document.createElement('ol');
+        preview.appendChild(list);
+
+        for(const file of curFiles) {
+          const listItem = document.createElement('li');
+          const para = document.createElement('p');
+
+          if(validFileType(file)) {
+            para.textContent = `File name ${file.name}, file size ${returnFileSize(file.size)}.`;
+
+            listItem.appendChild(para);
+          } else {
+            para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
+            listItem.appendChild(para);
+          }
+
+          list.appendChild(listItem);
+        }
+      }
+    }
+
+// https://developer.mozilla.org/en-US/docs/Web/Media/Formats/Image_types
+    const fileTypes = [
+        'application/pdf'
+    ];
+
+    function validFileType(file) {
+      return fileTypes.includes(file.type);
+    }
+
+    function returnFileSize(number) {
+      if(number < 1024) {
+        return number + 'bytes';
+      } else if(number > 1024 && number < 1048576) {
+        return (number/1024).toFixed(1) + 'KB';
+      } else if(number > 1048576) {
+        return (number/1048576).toFixed(1) + 'MB';
+      }
+    }
+  </script>
+</body>
 </html>
